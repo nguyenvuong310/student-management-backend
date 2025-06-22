@@ -1,17 +1,23 @@
 import { Module } from '@nestjs/common';
 import { StudentsModule } from './modules/students/students.module';
 
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
 
 import { readFileSync } from 'fs';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
+    AuthModule,
     StudentsModule,
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    PrometheusModule.register({
+      path: '/metrics', // default là /metrics
     }),
 
     TypeOrmModule.forRootAsync({
@@ -26,7 +32,7 @@ import { readFileSync } from 'fs';
         entities: [join(__dirname, '**', '*.entity.{ts,js}')],
         synchronize: false,
         migrationsRun: true,
-        migrations: ['dist/database/migrations/*.{ts,js}'],
+        migrations: ['dist/database/migrations/*.js'],
         cli: {
           migrationsDir: 'src/database/migrations',
         },

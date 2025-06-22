@@ -6,11 +6,14 @@ import { ValidationPipe } from '@nestjs/common';
 
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { TransformInterceptor } from './core/transform.interceptor';
+import { JwtAuthGuard } from './modules/auth/jwt-auth.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const reflector = app.get(Reflector);
   const configService = app.get(ConfigService);
+
+  app.useGlobalGuards(new JwtAuthGuard(reflector));
 
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
 
@@ -54,7 +57,7 @@ async function bootstrap() {
     },
   });
 
-  await app.listen(configService.get<string>('PORT') || 3000);
+  await app.listen(3000, '0.0.0.0');
 
   console.log('Trigger executed successfully');
   console.log(

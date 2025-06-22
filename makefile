@@ -1,6 +1,6 @@
 
 build:
-	docker buildx build --platform linux/amd64 -t vuong676/vdt:latest .
+	docker build -t vuong676/listvdt-backend-api:latest .
 
 push:
 	docker push vuong676/vdt:latest
